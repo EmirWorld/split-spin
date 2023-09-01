@@ -1,0 +1,38 @@
+*,
+*::after,
+*::before {
+    margin: 0;
+    padding: 0;
+    box-sizing: inherit;
+}
+
+:focus-visible {
+    outline: none;
+}
+
+
+html {
+    height: 100%;
+    font-size: 16px !important; //1rem = 10px; 10px/16px = 62.5%
+
+    @include respond(big-desktop) {
+     font-size: 75% !important; //1rem = 12px, 12/16 = 75%
+    }
+    
+    @include respond(tab-land) {
+     font-size: 56.25% !important; //1rem = 10px; 10px/16px = 569px, 9/16 =56.25%
+    }
+    
+    @include respond(tab-port) {
+     font-size: 50% !important; //1rem = 8px, 8/16 =50%
+    }
+    
+    @include respond(phone) {
+     font-size: 45% !important; //1rem = 10px; 10px/16px = 569px, 9/16 =56.25%
+    }
+}
+
+body {
+    transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out;
+    @apply bg-gradient-to-r from-cyan-500 to-blue-700 font-sans font-normal leading-4 text-black ;
+}
