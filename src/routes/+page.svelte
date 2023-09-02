@@ -1,4 +1,5 @@
 <script lang="ts">
+	import Background from '$lib/assets/images/background.svg';
 	interface Competitor {
 		id: number;
 		name: string;
@@ -11,14 +12,9 @@
 		headers: { 'x-api-key': '04KN1I2tiltlZTuEkB2Fow==nTZAw6hVLgOzLwvi' }
 	};
 	let winner: Competitor | undefined;
-	let competitors = [
-		{ id: 1, name: 'John', hasWon: false, icon: '🦹' },
-		{ id: 2, name: 'Jane', hasWon: false, icon: '🦹' },
-		{ id: 3, name: 'Joe', hasWon: false, icon: '🦹' },
-		{ id: 4, name: 'Jill', hasWon: false, icon: '🦹' }
-	];
-	let newFriendName = '';
-	let joke = '';
+	let competitors: Competitor[] = []
+	let newFriendName: string = '';
+	let joke: string = '';
 
 	$: if (winner === undefined) getJoke();
 
@@ -37,15 +33,15 @@
 		const competitorElements = document.querySelectorAll('.bg-green-500');
 		competitorElements.forEach((element) => {
 			element.classList.remove('bg-green-500');
-			element.classList.add('bg-white');
+			element?.classList.add('bg-orange-950');
 		});
 	};
 
-	const spinSplit = async () => {
-		resertState();
+	const startSpin = async () => {
+		await resertState();
 		let randomIndex: number = 0;
 		await new Promise<void>((resolve) => {
-			for (let i = 0; i < 15; i++) {
+			for (let i = 0; i < competitors.length + 10; i++) {
 				randomIndex = Math.floor(Math.random() * competitors.length);
 				const currentElement = document.getElementById('competitor-' + randomIndex);
 				setTimeout(
@@ -53,11 +49,11 @@
 						let greenElements = document.querySelectorAll('.bg-green-500');
 						greenElements.forEach((element) => {
 							element.classList.remove('bg-green-500');
-							element.classList.add('bg-white');
+							element.classList.add('bg-orange-950');
 						});
+						currentElement?.classList.remove('bg-orange-950');
 						currentElement?.classList.add('bg-green-500');
-						currentElement?.classList.remove('bg-white');
-						if (i === 14) {
+						if (i === competitors.length - 1 + 10) {
 							resolve();
 						}
 					},
@@ -70,8 +66,8 @@
 		winner = competitors[randomIndex];
 		winner.hasWon = true;
 		const winnerElement = document.getElementById('competitor-' + String(randomIndex));
+		winnerElement?.classList.remove('bg-orange-950');
 		winnerElement?.classList.add('bg-green-500');
-		winnerElement?.classList.remove('bg-white');
 	};
 
 	const addFriend = () => {
@@ -86,15 +82,32 @@
 </script>
 
 <div class="h-screen w-full relative flex items-center justify-center">
+	<img class="absolute inset-0 z-0 object-cover w-full h-full" src={Background} alt="" />
 	{#if winner}
-		<div class="absolute-center bg-blue-500 p-4">
-			<h1 class="text-xl  mt-2 max-w-xs font-bold font-mono text-white">
-				Sorry: {winner.name} but you are the "Winner" 🥹
+		<div
+			class="modal absolute-center {winner &&
+				'modal-active'} z-50 bg-orange-800 p-4 flex flex-col items-center justify-center border-4 w-8/12 h-4/6 border-orange-950"
+		>
+			<button
+				on:click={resertState}
+				class="absolute w-12 h-12 top-0 text-xl right-0 p-2 text-white"
+			>
+				×
+			</button>
+			<h1 class="text-3xl text-center mt-2 leading-9 font-bold font-mono text-white">
+				"Congratulations {winner?.name} on your epic Spin and Split victory!
 			</h1>
+			<p class="text-white mt-6 text-xl font-mono px-14">
+				🎉 You spun that wheel like a pro, and now it's time to split the bill like a champ. Don't
+				worry; we promise not to calculate your share using a roulette wheel! 😂🍕🍔🍰🍹💸 Enjoy
+				your moment of glory and may the odds be ever in your flavor!"
+			</p>
 		</div>
 	{/if}
-	<div class="w-6/12 h-3/6 bg-white bg-opacity-40 shadow-md rounded-md flex">
-		<div class="text-center flex-0 flex flex-col p-4 border-r">
+	<div
+		class="game-wrapper z-10 w-6/12 h-3/6 bg-orange-900 outline outline-4 outline-orange-950 bg-opacity-90 shadow-md rounded-md flex"
+	>
+		<div class="text-center flex-0 flex flex-col p-4 border-orange-950 border-r-4">
 			<h1 class="text-xl font-bold font-mono text-white">Welcome to split and spin</h1>
 			<div class="max-w-xs text-white text-xs font-thin font-mono mt-auto">
 				<quote>{joke}</quote>
@@ -112,25 +125,29 @@
 			</div>
 		</div>
 		<div class="flex-1 p-4 flex flex-col">
-			<div class="overflow-scroll">
+			<div class="overflow-auto">
 				<div class="grid gap-4 grid-cols-2">
-					{#each competitors as competitor, index}
-						<div
-							id={'competitor-' + String(index)}
-							class="flex flex-row bg-white bg-opacity-75 border overflow-hidden rounded-md justify-between"
-						>
-							<div class="flex-1 flex items-center space-x-2 text-start px-4">
-								<p>{competitor.icon || '␦'}</p>
-								<h1 class="text-xl text-gray-600">{competitor.name}</h1>
+					{#if competitors}
+						{#each competitors as competitor, index}
+							<div
+								id={'competitor-' + String(index)}
+								class="flex flex-row bg-opacity-75 bg-orange-950 border-orange-950 border-2 overflow-hidden rounded-md justify-between"
+							>
+								<div class="flex-1 flex items-center space-x-2 text-start px-4">
+									<p>{competitor.icon || '␦'}</p>
+									<h1 class="text-xl text-white">{competitor.name}</h1>
+								</div>
 							</div>
-						</div>
-					{/each}
+						{/each}
+					{/if}
 				</div>
 			</div>
-			<button
-				on:click={spinSplit}
-				class=" font-mono uppercase mt-auto font-bold text-white text-3xl py-4 w-full">Spin</button
-			>
+			<button on:click={startSpin} class="btn striped-shadow mt-auto mx-auto mb-4 white">
+				<span>Spin</span>
+			</button>
 		</div>
 	</div>
 </div>
+
+<style lang="scss">
+</style>

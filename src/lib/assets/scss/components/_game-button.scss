@@ -1,0 +1,54 @@
+@import 'https://fonts.googleapis.com/css?family=Bungee+Shade';
+
+button {
+  overflow: visible;
+  border: 0;
+  padding: 2rem;
+  margin: 1.8rem;
+}
+.btn.striped-shadow span {
+  display: block;
+  position: relative;
+  z-index: 2;
+  border: 5px solid;
+}
+.btn.striped-shadow.white span {
+  border-color: #fff;
+  color: #fff;
+}
+
+.btn.striped-shadow.blue span {
+  border-color: #4183D7;
+  background: #77bfa1;
+  color: #4183D7;
+}
+.btn.striped-shadow.dark span {
+  border-color: #393939;
+  background: #77bfa1;
+  color: #393939;
+}
+
+.btn {
+  font-family: 'Bungee Shade', sans-serif;
+  height: 80px;
+  line-height: 65px;
+  display: inline-block;
+  letter-spacing: 1px;
+  position: relative;
+  font-size: 1.35rem;
+  transition: opacity .3s, z-index .3s step-end, -webkit-transform .3s;
+  transition: opacity .3s, z-index .3s step-end, transform .3s;
+  transition: opacity .3s,
+    z-index .3s step-end,
+    transform .3s,
+    -webkit-transform .3s;
+  z-index: 1;
+  background-color: transparent;
+  cursor: pointer;
+}
+
+.btn {
+  width: 155px;
+  height: 48px;
+  line-height: 38px;
+}
